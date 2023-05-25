@@ -12,7 +12,6 @@ def input_grid():
                         Line(((7,0),(7,10)),SolidFill(5)),
                         Dot((0,0),SolidFill(4)),
 	                Dot((0,1),SolidFill(4)),
-		        Dot((0,8),SolidFill(4)),
 		        Dot((1,1),SolidFill(4)),
 			Dot((2,0),SolidFill(4)),
 			Dot((1,6),SolidFill(4)),

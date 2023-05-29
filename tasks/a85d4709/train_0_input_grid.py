@@ -10,4 +10,3 @@ def input_grid():
             Dot((1,1),SolidFill(5)),
             Dot((0,2),SolidFill(5))
 			]))
-

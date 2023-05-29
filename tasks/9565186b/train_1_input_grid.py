@@ -11,4 +11,4 @@ def input_grid():
 		Dot((1,1),SolidFill(1)),
 		Dot((1,2),SolidFill(3)),
 		Line(((2,1),(2,2)),SolidFill(2))
-	]))
+		]))

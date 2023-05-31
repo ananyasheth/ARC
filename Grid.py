@@ -1,3 +1,5 @@
+import numpy as np
+
 class Grid:
   '''
   The Grid class represents an ARC grid. 

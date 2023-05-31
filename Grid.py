@@ -25,6 +25,8 @@ class Grid:
     self.group_of_shapes = group_of_shapes
 
   def check_shapes(self):
-    if self.group_of_shapes is None:
-      return(None)
-    return(self.group_of_shapes==self.original_image_matrix)
+      if self.group_of_shapes is None:
+        return(None)
+      background_coords = ((self.group_of_shapes.shapes[0].min_x,self.group_of_shapes.shapes[0].min_y),(self.group_of_shapes.shapes[0].max_x,self.group_of_shapes.shapes[0].max_y))
+      self.group_of_shapes.croppedMatrix(background_coords)
+      return(np.array_equal(self.group_of_shapes.cropped_matrix,self.original_image_matrix.matrix))

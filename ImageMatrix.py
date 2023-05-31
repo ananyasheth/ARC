@@ -56,7 +56,7 @@ class ImageMatrix:
     
   def croppedMatrix(self,coords):
     ((x1,y1),(x2,y2)) = coords
-    return(self.matrix[x1:x2][y1:y2])
+    self.cropped_matrix=self.matrix[x1-(self.x_offset):x2-(self.x_offset)+1,y1-(self.y_offset):y2-(self.y_offset)+1]
 
   def updateMatrix(self,matrix,offset=(0,0)):
     (x_offset,y_offset) = offset

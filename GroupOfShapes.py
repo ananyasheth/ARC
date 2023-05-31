@@ -34,19 +34,22 @@ class GroupOfShapes(Shape):
       return fetched_shapes
             
   def intersection_of_lines(self,list_of_lines):
+    intersection_points = []
     for each_line in list_of_lines:
       if each_line.kind == 'HLine':
         x_value=each_line.min_x
         min_y=each_line.min_y
         max_y=each_line.max_y
-      if each_line.kind == 'VLine':
-        y_value=each_line.min_y
-        min_x=each_line.min_x
-        max_x=each_line.max_x
-    for y_values in range(min_y,max_y):
-      for x_values in range(min_x,max_x):
-        if (x_value,y_values)==(x_values,y_value):
-          return x_value,y_values
+        for each_line in list_of_lines:
+          if each_line.kind == 'VLine':
+            y_value=each_line.min_y
+            min_x=each_line.min_x
+            max_x=each_line.max_x
+            for y_values in range(min_y,max_y):
+              for x_values in range(min_x,max_x):
+                if (x_value,y_values)==(x_values,y_value):
+                  intersection_points.append((x_value,y_value))
+    return intersection_points
           
   def split_matrix(self,row=0,column=0):
     if row==0:

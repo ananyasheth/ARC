@@ -58,7 +58,7 @@ class Line(Shape):
 
 class Rectangle(Shape):
 
-  def __init__(self,points,fill):
+  def __init__(self,points,fill,subshape=None):
     ((x1,y1),(x2,y2)) = points
     min_x = min(x1,x2)
     max_x = max(x1,x2)
@@ -74,7 +74,8 @@ class Rectangle(Shape):
 
   def __gt__(self,other):
     return(self.x_size*self.y_size>other.x_size*other.y_size)
-
+    
+    
 class RectangleOutline(Shape): 
 
   def __init__(self,points,fill):

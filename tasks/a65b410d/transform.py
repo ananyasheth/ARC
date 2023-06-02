@@ -4,10 +4,10 @@ from Fill import *
 from GroupOfShapes import *
 
 def transform(group_of_shapes):
-
-    new_group_of_shapes=[]
-    new_group_of_shapes.append(group_of_shapes)
+    new_group_of_shapes=[group_of_shapes]
     mainline = group_of_shapes.fetch_shape(['HLine'])
+    if len(mainline)==1:
+      mainline = mainline[0]
     for line_number in range(0,mainline.min_x+mainline.y_size):
       if line_number>=mainline.min_x:
         if line_number==mainline.min_x:

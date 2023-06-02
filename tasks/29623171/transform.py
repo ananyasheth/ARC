@@ -5,7 +5,6 @@ from GroupOfShapes import *
 
 def transform(group_of_shapes):
   number_of_dots=[]
-  print(group_of_shapes)
   background = group_of_shapes.fetch_shape(['Background'])
   lines = group_of_shapes.fetch_shape(['HLine','VLine'])
   dots = group_of_shapes.fetch_shape(['Dot'])

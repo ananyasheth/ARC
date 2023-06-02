@@ -44,10 +44,7 @@ class GroupOfShapes(Shape):
       else:
         if self.check_coordinates(shape,coordinates) and self.check_kind(shape,kind):
           fetched_shapes.append(shape)
-    if len(fetched_shapes)==1:
-      return fetched_shapes[0]
-    else:
-      return fetched_shapes
+    return fetched_shapes
             
   def intersection_of_lines(self,list_of_lines):
     intersection_points = []
@@ -94,4 +91,3 @@ class GroupOfShapes(Shape):
       top_matrix = self.matrix[:row+1, :]
       bottom_matrix = self.matrix[row+1:, :]
       return top_matrix,bottom_matrix
-

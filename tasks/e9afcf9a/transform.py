@@ -7,7 +7,7 @@ def transform(group_of_shapes):
     i=0
     lines = group_of_shapes.fetch_shape(['HLine'])
     line_colours=[line.fill.colour for line in lines]
-    new_group_of_shapes=[group_of_shapes.fetch_shape(['Background'])]
+    new_group_of_shapes=group_of_shapes.fetch_shape(['Background'])
     for line in lines:
       if i%2==0:
         new_group_of_shapes.append(Line(((line.min_x,line.min_y),(line.max_x,line.max_y)),CheckeredFill(line_colours)))
@@ -16,6 +16,5 @@ def transform(group_of_shapes):
         new_group_of_shapes.append(Line(((line.min_x,line.min_y),(line.max_x,line.max_y)),CheckeredFill(line_colours)))
         line_colours.reverse()
       i+=1
-    print(GroupOfShapes(new_group_of_shapes).matrix)
     return(GroupOfShapes(new_group_of_shapes))
     

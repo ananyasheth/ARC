@@ -5,8 +5,19 @@ from GroupOfShapes import *
 
 def transform(group_of_shapes):
    background = group_of_shapes.fetch_shape(['Background'])
+   background_shape = background[0] #as there is always only one background
    rectangle_outline = RectangleOutline(((0,0),(background.max_x,background.max_y)),SolidFill(8))
    return (GroupOfShapes([background,rectangle_outline]))
+     
+    
+   
+   
+
+
+
+
+
+
      
     
    

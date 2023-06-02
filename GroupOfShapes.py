@@ -21,12 +21,28 @@ class GroupOfShapes(Shape):
         if shape>lg:
           lg = shape
     return(lg)
+
+  def check_coordinates(self,shape,coordinates):
+    ((coordx1,coordy1),(coordx2,coordy2))=coordinates
+    if coordx1<=shape.min_x<=coordx2 and coordx1<=shape.max_x<=coordx2 and coordy1<=shape.min_y<=coordy2 and coordy1<=shape.max_y<=coordy2:
+      return True
     
-  def fetch_shape(self,kind):
-    fetched_shapes=[]
-    for shape in self.shapes:
+  def check_kind(self,shape,kind):
       for shape_kind in kind:
         if shape.kind==shape_kind:
+          return True
+    
+  def fetch_shape(self,kind=None,coordinates=None):
+    fetched_shapes=[]
+    for shape in self.shapes:
+      if coordinates is not None and kind is None:
+        if self.check_coordinates(shape,coordinates):
+          fetched_shapes.append(shape)
+      elif kind is not None and coordinates is None:
+        if self.check_kind(shape,kind):
+          fetched_shapes.append(shape)
+      else:
+        if self.check_coordinates(shape,coordinates) and self.check_kind(shape,kind):
           fetched_shapes.append(shape)
     if len(fetched_shapes)==1:
       return fetched_shapes[0]
@@ -50,7 +66,25 @@ class GroupOfShapes(Shape):
                 if (x_value,y_values)==(x_values,y_value):
                   intersection_points.append((x_value,y_value))
     return intersection_points
-          
+    
+  def segment_grid(self,intersection_points,segment_size):
+    segments = []
+    for each_points_pair in intersection_points:
+      segments.append(((each_points_pair[0]-segment_size,each_points_pair[1]-segment_size),(each_points_pair[0]-1,each_points_pair[1]-1)))
+      segments.append(((each_points_pair[0]+1,each_points_pair[1]+1),(each_points_pair[0]+segment_size,each_points_pair[1]+segment_size)))
+      segments.append(((each_points_pair[0]-segment_size,each_points_pair[1]+1),(each_points_pair[0]-1,each_points_pair[1]+segment_size)))
+      segments.append(((each_points_pair[0]+1,each_points_pair[1]-segment_size),(each_points_pair[0]+segment_size,each_points_pair[1]-1)))
+    unique_segments = list(dict.fromkeys(segments))
+    return unique_segments
+    
+  def count_shapes(self,segment,shape):
+    for x in range(segment.min_x,segment.max_x+1):
+      for y in range(segment.min_y,segment.max_y+1):
+        for each_shape in shape:
+          if shape.min_x==x or shape.min_y==y:
+            segment.subshape.append(each_shape)
+    return len(segment.subshape)
+    
   def split_matrix(self,row=0,column=0):
     if row==0:
       left_matrix = self.matrix[:, :column+1]

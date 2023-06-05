@@ -46,9 +46,6 @@ class ImageMatrix:
     Adds another matrix on top of itself.
   self.delete(matrix_to_delete)
     Cuts a whole in itself using the shape of another matrix.
-  self.split(row,column)
-    Splits a matrix into two parts using the row or column number.
-
   '''
 
   def __init__(self,matrix,offset=(0,0)):

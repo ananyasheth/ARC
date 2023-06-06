@@ -110,4 +110,10 @@ class ImageMatrix:
         if m_value in (0,1,2,3,4,5,6,7,8,9):
           self.matrix[x-self.min_x,y-self.min_y] = -1
 
-  
+  def scale(self,x,y):
+    matrix = np.full((self.x_size*x,self.y_size*y),self.fill.colour)
+    self.updateMatrix(matrix)
+    
+  def move_by(self,x,y):
+    offset=(x,y)
+    self.updateMatrix(self.matrix,offset)

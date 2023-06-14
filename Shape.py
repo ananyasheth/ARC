@@ -102,6 +102,7 @@ class RectangleOutline(Shape):
     return(self.x_size*self.y_size>other.x_size*other.y_size)
 
 class Tshape(Shape):
+  
   def __init__(self,points,fill):
     ((x1,y1),(x2,y2),(x3,y3)) = points    # x3,y3 T corner point
     min_x = min(x1,x2,x3)
@@ -133,6 +134,7 @@ class Tshape(Shape):
 
 
 class Polyline(Shape):
+  
   def __init__(self, points,fill):
     min_x = min(point[0] for point in points)              
     max_x = max(point[0] for point in points)

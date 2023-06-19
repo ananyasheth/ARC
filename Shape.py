@@ -200,3 +200,65 @@ class Polyline(Shape):
     self.fill = fill
     self.points = points
 
+class Polygon(Shape):
+  def __init__(self, points,fill):
+    min_x = min(point[0] for point in points)
+    max_x = max(point[0] for point in points)
+    x_size = max_x - min_x + 1
+    min_y = min(point[1] for point in points)
+    max_y = max(point[1] for point in points)
+    y_size = max_y - min_y + 1
+    matrix = np.full((x_size, y_size), -1)
+
+    # Connect the points to form the shape
+    for point in range(len(points)):
+      x1, y1 = points[point]      # current point
+      x2, y2 = points[(point + 1) % len(points)]  # next point
+      dx = x2 - x1
+      dy = y2 - y1
+
+      # Move up                   # number of steps needed to move from current point to next point
+      if dx < 0 and dy == 0:
+        for step in range(abs(dx) + 1):
+          matrix[x1 - step - min_x, y1 - min_y] = 10
+
+      # Move down
+      if dx > 0 and dy == 0:
+        for step in range(dx + 1):
+          matrix[x1 + step - min_x, y1 - min_y] = 10
+
+      # Move right
+      if dx == 0 and dy > 0:
+        for step in range(dy + 1):
+          matrix[x1 - min_x, y1 + step - min_y] = 10
+
+      # Move left
+      if dx == 0 and dy < 0:
+        for step in range(abs(dy) + 1):
+          matrix[x1 - min_x, y1 - step - min_y] = 10
+
+      # Move up right
+      if dx < 0 and dy > 0:
+        for step in range(dy + 1):
+          matrix[x1 - step - min_x, y1 + step - min_y] = 10
+
+      # Move up left
+      if dx < 0 and dy < 0:
+        for step in range(abs(dy) + 1):
+          matrix[x1 - step - min_x, y1 - step - min_y] = 10
+
+      # Move down right
+      if dx > 0 and dy > 0:
+        for step in range(dx + 1):
+          matrix[x1 + step - min_x, y1 + step - min_y] = 10
+
+      # Move down left
+      if dx > 0 and dy < 0:
+        for step in range(dx + 1):
+          matrix[x1 + step - min_x, y1 - step - min_y] = 10
+
+    ImageMatrix.__init__(self, matrix, (min_x, min_y))
+    fill.apply(self)
+    self.kind = 'Polygon'
+    self.fill = fill
+    self.points = points

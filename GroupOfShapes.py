@@ -10,7 +10,14 @@ class GroupOfShapes(Shape):
     for s in shapes[1:]:
       self.add_on_top(s)
     self.kind = 'GroupOfShapes'
-
+  
+  def updateGroupOfShapes(self):
+    updatedshapes = []
+    for shapes in self.shapes:
+      updatedshapes.append(shapes)
+    updatedGroupOfShapes = GroupOfShapes(updatedshapes)
+    return updatedGroupOfShapes
+    
   def largest(self,kind):
     lg = None
     for shape in self.shapes:
@@ -91,3 +98,4 @@ class GroupOfShapes(Shape):
       top_matrix = self.matrix[:row+1, :]
       bottom_matrix = self.matrix[row+1:, :]
       return top_matrix,bottom_matrix
+

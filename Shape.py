@@ -55,10 +55,14 @@ class Line(Shape):
     ImageMatrix.__init__(self,matrix,(min_x,min_y))
     fill.apply(self)
     self.fill = fill
+    
+  def scale(self,x,y):
+    new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
 
 class Rectangle(Shape):
 
-  def __init__(self,points,fill,subshape=None):
+  def __init__(self,points,fill):
     ((x1,y1),(x2,y2)) = points
     min_x = min(x1,x2)
     max_x = max(x1,x2)
@@ -75,7 +79,10 @@ class Rectangle(Shape):
   def __gt__(self,other):
     return(self.x_size*self.y_size>other.x_size*other.y_size)
     
-    
+  def scale(self,x,y):
+    new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
+  
 class RectangleOutline(Shape): 
 
   def __init__(self,points,fill):
@@ -100,9 +107,18 @@ class RectangleOutline(Shape):
 
   def __gt__(self,other):
     return(self.x_size*self.y_size>other.x_size*other.y_size)
-
+    
+  def scale(self,x,y):
+    new_matrix = np.zeros((self.x_size*x, self.y_size*y))
+    for a in range(0,self.x_size*x):
+      new_matrix[a][0] = self.fill.colour
+      new_matrix[a][(self.y_size*y)-1] = self.fill.colour
+    for b in range(0,self.y_size*y):
+      new_matrix[0][b] = self.fill.colour
+      new_matrix[(self.x_size*x)-1][b] = self.fill.colour
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
+    
 class Tshape(Shape):
-  
   def __init__(self,points,fill):
     ((x1,y1),(x2,y2),(x3,y3)) = points    # x3,y3 T corner point
     min_x = min(x1,x2,x3)
@@ -132,11 +148,9 @@ class Tshape(Shape):
     self.kind = 'Tshape'
     self.fill = fill
 
-
 class Polyline(Shape):
-  
   def __init__(self, points,fill):
-    min_x = min(point[0] for point in points)              
+    min_x = min(point[0] for point in points)
     max_x = max(point[0] for point in points)
     x_size = max_x - min_x + 1
     min_y = min(point[1] for point in points)
@@ -149,9 +163,9 @@ class Polyline(Shape):
       if point + 1 == len(points):
         break                       # connection stops between last point and first point
       else:
-        x1, y1 = points[point]      # current point      
+        x1, y1 = points[point]      # current point
         x2, y2 = points[point + 1]  # next point
-        dx = x2 - x1                                
+        dx = x2 - x1
         dy = y2 - y1
 
         # Move up                   # number of steps needed to move from current point to next point
@@ -161,7 +175,7 @@ class Polyline(Shape):
 
         # Move down
         if dx > 0 and dy == 0:
-          for step in range(dx + 1):                       
+          for step in range(dx + 1):
             matrix[x1 + step - min_x, y1 - min_y] = 10
 
         # Move right
@@ -176,7 +190,7 @@ class Polyline(Shape):
 
         # Move up right
         if dx < 0 and dy > 0:
-          for step in range(dy + 1):                       
+          for step in range(dy + 1):
             matrix[x1 - step - min_x, y1 + step - min_y] = 10
 
         # Move up left
@@ -199,6 +213,7 @@ class Polyline(Shape):
     self.kind = 'Polyline'
     self.fill = fill
     self.points = points
+
 
 class Polygon(Shape):
   def __init__(self, points,fill):

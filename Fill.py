@@ -9,7 +9,6 @@ class SolidFill(Fill):
   def __init__(self,colour):
     self.colour = colour
     self.kind = 'SolidFill'
-
   def apply(self,matrix):
     for x in range(matrix.min_x,matrix.max_x+1):
       for y in range(matrix.min_y,matrix.max_y+1):

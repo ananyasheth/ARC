@@ -117,35 +117,3 @@ class ImageMatrix:
     offset=(self.x_offset+x,self.y_offset+y)
     matrix = self.matrix
     self.updateMatrix(matrix,offset)
-
-  def rotate(self,around_point,degrees):
-    num_rotations = int(degrees/90)
-    new_elements=[]
-    for rotations in range(0,num_rotations):
-        new_min_x = new_max_x = new_min_y = new_max_y = None
-        rows = self.y_size
-        cols = self.x_size
-        new_matrix = np.empty((rows, cols),dtype=int)
-        for i in range (self.min_x,self.max_x+1):
-          for j in range (self.min_y,self.max_y+1):
-            colour = self.getCell(i,j)
-            diff = (i - around_point[0], j - around_point[1])
-            translation = (diff[1], -diff[0])
-            new_pos = (around_point[0] + translation[0], around_point[1] + translation[1])
-            new_elements.append([new_pos,colour])
-            if not new_min_x and not new_min_y and not new_max_x and not new_max_y:
-              new_min_x = new_max_x = new_pos[0]
-              new_min_y = new_max_y = new_pos[1]
-              continue
-            if new_pos[0]>new_max_x:
-              new_max_x=new_pos[0]
-            if new_pos[0]<new_min_x:
-              new_min_x=new_pos[0]
-            if new_pos[1]>new_max_y:
-              new_max_y=new_pos[1]
-            if new_pos[1]<new_min_y:
-              new_min_y=new_pos[1]
-        for elements in new_elements:
-          new_matrix[elements[0][0]-new_min_x][elements[0][1]-new_min_y]=elements[1]
-        self.updateMatrix(new_matrix,(new_min_x,new_min_y))
-        new_elements=[]

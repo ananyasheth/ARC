@@ -3,7 +3,78 @@ from ImageMatrix import *
 from Fill import *
 
 class Shape(ImageMatrix):
-  pass
+
+  def rotate(self,around_point,degrees):
+    num_rotations = int(degrees/90)
+    new_elements=[]
+    for rotations in range(0,num_rotations):
+        new_min_x = new_max_x = new_min_y = new_max_y = None
+        rows = self.y_size
+        cols = self.x_size
+        new_matrix = np.empty((rows, cols),dtype=int)
+        for i in range (self.min_x,self.max_x+1):
+          for j in range (self.min_y,self.max_y+1):
+            colour = self.getCell(i,j)
+            diff = (i - around_point[0], j - around_point[1])
+            translation = (diff[1], -diff[0])
+            new_pos = (around_point[0] + translation[0], around_point[1] + translation[1])
+            new_elements.append([new_pos,colour])
+            if not new_min_x and not new_min_y and not new_max_x and not new_max_y:
+              new_min_x = new_max_x = new_pos[0]
+              new_min_y = new_max_y = new_pos[1]
+              continue
+            if new_pos[0]>new_max_x:
+              new_max_x=new_pos[0]
+            if new_pos[0]<new_min_x:
+              new_min_x=new_pos[0]
+            if new_pos[1]>new_max_y:
+              new_max_y=new_pos[1]
+            if new_pos[1]<new_min_y:
+              new_min_y=new_pos[1]
+        for elements in new_elements:
+          new_matrix[elements[0][0]-new_min_x][elements[0][1]-new_min_y]=elements[1]
+        self.updateMatrix(new_matrix,(new_min_x,new_min_y))
+        new_elements=[]
+        
+  def flip(self,axis,grid_dimensions):
+    new_pos_x = []
+    new_pos_y = []
+    colours = []
+    new_min_x = new_max_x = new_min_y = new_max_y = None
+    for i in range (self.min_x,self.max_x+1):
+      for j in range (self.min_y,self.max_y+1):
+        colour = self.getCell(i,j)
+        if axis=='Horizontal':
+          new_matrix = np.empty((self.x_size, self.y_size),dtype=int)
+          new_pos_x.append(grid_dimensions[0]-i)
+          new_pos_y.append(j)
+          colours.append(colour)
+        elif axis=='Vertical':
+          new_matrix = np.empty((self.x_size, self.y_size),dtype=int)
+          new_pos_x.append(i)
+          new_pos_y.append(grid_dimensions[1]-j)
+          colours.append(colour)
+        elif axis=='LeftDiagonal':
+          new_matrix = np.empty((self.y_size, self.x_size),dtype=int)
+          new_pos_x.append(j)
+          new_pos_y.append(i)
+          colours.append(colour)
+        else:
+          new_matrix = np.empty((self.y_size, self.x_size),dtype=int)
+          new_pos_x.append(grid_dimensions[1]-j)
+          new_pos_y.append(grid_dimensions[0]-i)
+          colours.append(colour)
+    new_min_x = min(new_pos_x)
+    new_max_x = max(new_pos_x)
+    new_min_y = min(new_pos_y)
+    new_max_y = max(new_pos_y)
+    for e in range(0,len(new_pos_x)):
+      new_matrix[new_pos_x[e]-new_min_x][new_pos_y[e]-new_min_y]=colours[e]
+    self.updateMatrix(new_matrix,(new_min_x,new_min_y))
+    new_pos_x=[]
+    new_pos_y=[]
+    colours=[]
+    new_min_x = new_max_x = new_min_y = new_max_y = None
 
 class Background(Shape):
 
@@ -36,6 +107,7 @@ class Line(Shape):
     max_y = max(y1,y2)
     y_size = max_y-min_y+1
     matrix = np.full((x_size,y_size),-1)
+    
     if x_size==1: # horizontal line
       for y in range(min_y,max_y+1):
         matrix[0,y-min_y] = 10
@@ -44,17 +116,45 @@ class Line(Shape):
       for x in range(min_x,max_x+1):
         matrix[x-min_x,0] = 10
       self.kind = 'VLine'
+      
     else: # diagonal line
-      x = min_x
-      y = min_y
-      while (x<=max_x and y<=max_y):
-        matrix[x-min_x,y-min_y] = 10
-        x += 1
-        y += 1
+      # Move down right
+      if x1 < x2 and y1 < y2:
+        x=x1
+        y=y1
+        while(x<=max_x and y<=max_y):
+          matrix[x-min_x,y-min_y]=10
+          x+=1
+          y+=1
+      # Move down left
+      if x1 < x2 and y1 > y2:
+        x=x1
+        y=y1
+        while(x<=max_x and y>=min_y):
+          matrix[x-min_x,y-min_y]=10
+          x+=1
+          y-=1
+      # Move up right
+      if x1 > x2 and y1 < y2:
+        x=x1
+        y=y1
+        while(x>=min_x and y<=max_y):
+          matrix[x-min_x,y-min_y]=10
+          x-=1
+          y+=1
+      # Move up left
+      if x1 > x2 and y1 > y2:
+        x=x1
+        y=y1
+        while(x>=min_x and y>=min_y):
+          matrix[x-min_x,y-min_y]=10
+          x-=1
+          y-=1
       self.kind = 'DLine'
     ImageMatrix.__init__(self,matrix,(min_x,min_y))
     fill.apply(self)
     self.fill = fill
+    self.points = points
     
   def scale(self,x,y):
     new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)

@@ -16,8 +16,9 @@ class GroupOfShapes(Shape):
     for shapes in self.shapes:
       updatedshapes.append(shapes)
     updatedGroupOfShapes = GroupOfShapes(updatedshapes)
-    return updatedGroupOfShapes
-    
+    self.__class__ = updatedGroupOfShapes.__class__
+    self.__dict__ = updatedGroupOfShapes.__dict__
+  
   def largest(self,kind):
     lg = None
     for shape in self.shapes:
@@ -99,3 +100,12 @@ class GroupOfShapes(Shape):
       bottom_matrix = self.matrix[row+1:, :]
       return top_matrix,bottom_matrix
 
+  def rotate(self,around_point,degrees):
+    for shape in self.shapes:
+      shape.rotate(around_point,degrees)
+    self.updateGroupOfShapes()
+    
+  def flip(self,axis,grid_dimensions):
+    for shape in self.shapes:
+      shape.flip(axis,grid_dimensions)
+    self.updateGroupOfShapes()

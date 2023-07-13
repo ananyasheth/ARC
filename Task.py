@@ -41,32 +41,43 @@ class Task:
     self.test_pairs = test_pairs
     self.transform_function = transform_function
 
-  def check_shapes(self):
-    print('\n')
-    print(self.taskid+' ...')
-    print('checking shapes for all pairs ...')
-    for i in range(0,len(self.train_pairs)):
-      print('train pair '+str(i))
-      self.train_pairs[i].check_shapes()
-    for i in range(0,len(self.test_pairs)):
-      print('test pair '+str(i))
-      self.test_pairs[i].check_shapes()
-    print('\n')
+#  def check_shapes(self):
+#    print('\n')
+#    print(self.taskid+' ...')
+#    print('checking shapes for all pairs ...')
+#    for i in range(0,len(self.train_pairs)):
+#      print('train pair '+str(i))
+#      self.train_pairs[i].check_shapes()
+#    for i in range(0,len(self.test_pairs)):
+#      print('test pair '+str(i))
+#      self.test_pairs[i].check_shapes()
+#    print('\n')
 
   def load(self):
     f = open('ARC-master/data/training/'+self.taskid+'.json')
     self.__processOriginalJSON(f.read())
     f.close()
     self.transform_function = __import__('tasks.'+self.taskid+'.transform', fromlist=['transform']).transform
+    print(self.taskid+' ...')
     for i in range(0,len(self.train_pairs)):
+      print('\n')
       input_grid_function = __import__('tasks.'+self.taskid+'.train_'+str(i)+'_input_grid',fromlist=['input_grid']).input_grid
+      print('checking shapes for all pairs ...')
       self.train_pairs[i].input_grid.group_of_shapes = input_grid_function()
+      print('train pair '+str(i))
+      print('  input_grid',self.train_pairs[i].input_grid.check_shapes())
       self.train_pairs[i].output_grid.group_of_shapes = self.transform_function(self.train_pairs[i].input_grid.group_of_shapes)
+      print('  output_grid',self.train_pairs[i].output_grid.check_shapes())
     for i in range(0,len(self.test_pairs)):
+      print('\n')
       input_grid_function = __import__('tasks.'+self.taskid+'.test_'+str(i)+'_input_grid',fromlist=['input_grid']).input_grid
       self.test_pairs[i].input_grid.group_of_shapes = input_grid_function()
+      print('test pair '+str(i))
+      print('  input_grid',self.test_pairs[i].input_grid.check_shapes())
       self.test_pairs[i].output_grid.group_of_shapes = self.transform_function(self.test_pairs[i].input_grid.group_of_shapes)
-
+      print('  output_grid',self.test_pairs[i].output_grid.check_shapes())
+    print('\n')
+    
   def loadFromGithub(self):
     url = 'https://raw.githubusercontent.com/fchollet/ARC/master/data/training/'+self.taskid+'.json'
     response = requests.get(url)

@@ -21,6 +21,6 @@ class Pair:
     self.input_grid = input_grid
     self.output_grid = output_grid
 
-  def check_shapes(self):
-    print('  input_grid',self.input_grid.check_shapes())
-    print('  output_grid',self.output_grid.check_shapes())
+#  def check_shapes(self):
+#    print('  input_grid',self.input_grid.check_shapes())
+#    print('  output_grid',self.output_grid.check_shapes())

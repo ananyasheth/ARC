@@ -12,8 +12,7 @@ def transform(group_of_shapes):
     polyline = group_of_shapes.fetch_shape(['Polyline'])
     polyline_shape = polyline[0] # one polyline in each input
 
-    # Fill rectangle inside the C shape
-    rectanglefill = Rectangle(((polyline_shape.min_x + 1, polyline_shape.min_y + 1), (polyline_shape.max_x - 1, polyline_shape.max_y - 1)), SolidFill(4))
+
 
     # locate the firstpoint and lastpoint of C shape
     polyline_firstpoint_x_corr = polyline_shape.points[0][0]
@@ -49,8 +48,13 @@ def transform(group_of_shapes):
     if polyline_lastpoint_x_corr == polyline_firstpoint_x_corr:
         if polyline_lastpoint_x_corr > polyline_shape.min_x:         # downward 
 
-            # rectangle outslide C shape
-            rectanglefill_2 = Rectangle(((polyline_firstpoint_x_corr, polyline_firstpoint_y_corr + 1), (background.x_size, polyline_lastpoint_y_corr - 1)), SolidFill(4))
+            # Tshape
+            x1,y1 = polyline_shape.min_x +1, polyline_shape.min_y+1
+            x2,y2 = polyline_lastpoint_x_corr -1, polyline_lastpoint_y_corr
+            x3,y3 = polyline_firstpoint_x_corr, polyline_firstpoint_y_corr +1
+            x4,y4 = background.x_size, polyline_lastpoint_y_corr -1
+
+            tshape = Tshape(((x1, y1),(x2, y2), (x3, y3), (x4,y4)), SolidFill(4))
 
             # bottom right diagonal line
             line_first_point = (polyline_lastpoint_x_corr +1, polyline_lastpoint_y_corr)
@@ -65,8 +69,13 @@ def transform(group_of_shapes):
 
         else:                                               # upward
 
-            # rectangle outslide C shape
-            rectanglefill_2 = Rectangle(((polyline_firstpoint_x_corr, polyline_firstpoint_y_corr + 1), (0, polyline_lastpoint_y_corr -1)), SolidFill(4))
+            # Tshape
+            x1,y1 = polyline_firstpoint_x_corr +1, polyline_firstpoint_y_corr
+            x2,y2 = polyline_shape.max_x -1, polyline_shape.max_y -1
+            x3,y3 = 0, polyline_lastpoint_y_corr -1
+            x4,y4 = polyline_firstpoint_x_corr, polyline_firstpoint_y_corr +1
+
+            tshape = Tshape(((x1, y1),(x2, y2), (x3, y3), (x4,y4)), SolidFill(4))
 
             # Top right diagonal line
             line_first_point = (polyline_lastpoint_x_corr -1, polyline_lastpoint_y_corr)
@@ -83,8 +92,13 @@ def transform(group_of_shapes):
     else:
         if polyline_lastpoint_y_corr > polyline_shape.min_y:         # right
 
-            # rectangle outslide C shape
-            rectanglefill_2 = Rectangle(((polyline_firstpoint_x_corr+1, polyline_firstpoint_y_corr),(polyline_lastpoint_x_corr-1, background.y_size)), SolidFill(4))
+            # Tshape
+            x1,y1 = polyline_shape.min_x +1, polyline_shape.min_y+1
+            x2,y2 = polyline_lastpoint_x_corr, polyline_lastpoint_y_corr -1
+            x3,y3 = polyline_firstpoint_x_corr+1, polyline_firstpoint_y_corr
+            x4,y4 = polyline_lastpoint_x_corr -1, background.y_size
+
+            tshape = Tshape(((x1, y1),(x2, y2), (x3, y3), (x4,y4)), SolidFill(4))
 
             # Top right diagonal line
             line_first_point = (polyline_firstpoint_x_corr, polyline_firstpoint_y_corr+1)
@@ -99,8 +113,14 @@ def transform(group_of_shapes):
 
         else:                               # left
             
-            # rectangle outslide C shape
-            rectanglefill_2 = Rectangle(((polyline_firstpoint_x_corr+1, polyline_firstpoint_y_corr),(polyline_lastpoint_x_corr-1, 0)), SolidFill(4))         
+            # Tshape
+            x1,y1 = polyline_firstpoint_x_corr, polyline_firstpoint_y_corr +1
+            x2,y2 = polyline_shape.max_x -1, polyline_shape.max_y-1
+            x3,y3 = polyline_firstpoint_x_corr +1, 0
+            x4,y4 = polyline_lastpoint_x_corr-1, polyline_lastpoint_y_corr
+
+            tshape = Tshape(((x1, y1),(x2, y2), (x3, y3), (x4,y4)), SolidFill(4))
+
 
             # Top left diagonal line
             line_first_point = (polyline_firstpoint_x_corr, polyline_firstpoint_y_corr-1)
@@ -113,10 +133,9 @@ def transform(group_of_shapes):
             line_2 = Line((line_first_point,line_last_point),SolidFill(4))
 
 
-    new_group_of_shapes.extend([rectanglefill,rectanglefill_2, line, line_2])
+    new_group_of_shapes.extend([tshape, line, line_2])
 
 
 
 
     return GroupOfShapes(new_group_of_shapes)
-       

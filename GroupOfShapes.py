@@ -109,3 +109,6 @@ class GroupOfShapes(Shape):
     for shape in self.shapes:
       shape.flip(axis,grid_dimensions)
     self.updateGroupOfShapes()
+
+  def bounce(self,initial_point,inflection_point,final_point,colour):
+    return([Line((initial_point,inflection_point),SolidFill(colour)),Line((inflection_point,final_point),SolidFill(colour))])

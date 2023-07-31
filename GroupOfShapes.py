@@ -112,3 +112,74 @@ class GroupOfShapes(Shape):
 
   def bounce(self,initial_point,inflection_point,final_point,colour):
     return([Line((initial_point,inflection_point),SolidFill(colour)),Line((inflection_point,final_point),SolidFill(colour))])
+
+  def extend(self, background_size, start_coordinates, direction, colour):
+    (bg_x, bg_y) = background_size
+    (x, y) = start_coordinates
+    (x2, y2) = (x, y)
+    # Iterate to find the last point of the diagonal line based on the direction
+    if direction == "top-left":
+      while x2 > 0 and y2 > 0:
+        x2 -= 1
+        y2 -= 1
+    elif direction == "top-right":
+      while x2 > 0 and y2 < bg_y - 1:
+        x2 -= 1
+        y2 += 1
+    elif direction == "bottom-left":
+      while x2 < bg_x - 1 and y2 > 0:
+        x2 += 1
+        y2 -= 1
+    elif direction == "bottom-right":
+      while x2 < bg_x - 1 and y2 < bg_y - 1:
+        x2 += 1
+        y2 += 1
+    elif direction == "top":
+      while x2 > 0 :
+        x2 -= 1
+    elif direction == "bottom":
+      while x2 < bg_x - 1:
+        x2 += 1
+    elif direction == "left":
+      while y2>0:
+        y2 -= 1
+    elif direction == "right":
+      while y2 < bg_y - 1:
+        y2 += 1
+    return (Line(((x,y),(x2,y2)),SolidFill(colour)))
+
+
+  def join(self, point_1_coordinates, point_2_coordinates, join_type, colour):
+    (x1, y1) = point_1_coordinates
+    (x2, y2) = point_2_coordinates
+
+    # Iterate to find the last point of the diagonal line based on the direction
+    if join_type == "straight-line":
+      polyline = Polyline(((x1,y1),(x2,y2)),SolidFill(colour))
+    elif join_type == "right-angle":
+      if x2 >x1 and y2 >y1:
+        polyline = Polyline(((x1,y1),(x1,y2),(x2,y2)),SolidFill(colour))
+      elif x2 >x1 and y2==y1:
+        polyline = Polyline(((x1,y1),(int(x2/2),int(y1+(x2/2))),(x2,y2)),SolidFill(colour))
+      elif x2 >x1 and y2<y1:
+        polyline = Polyline(((x1,y1),(x2,y1),(x2,y2)),SolidFill(colour))
+      elif x2 <x1 and y2 >y1: 
+        polyline = Polyline(((x1,y1),(x1,y2),(x2,y2)),SolidFill(colour))
+      elif x2 <x1 and y2==y1:
+        polyline = Polyline(((x2,y2),(int(x1/2),int(y2+(x1/2))),(x1,y1)),SolidFill(colour))
+      else: 
+        polyline = Polyline(((x1,y1),(x2,y1),(x2,y2)),SolidFill(colour))
+    else:                                                                         # left angle
+      if x2 >x1 and y2 >y1:
+        polyline = Polyline(((x1,y1),(x2,y1),(x2,y2)),SolidFill(colour))
+      elif x2 >x1 and y2==y1:
+        polyline = Polyline(((x1,y1),(int(x2/2),int(y1-(x2/2))),(x2,y2)),SolidFill(colour))
+      elif x2 >x1 and y2<y1:
+        polyline = Polyline(((x1,y1),(x1,y2),(x2,y2)),SolidFill(colour))
+      elif x2 <x1 and y2 >y1: 
+        polyline = Polyline(((x1,y1),(x2,y1),(x2,y2)),SolidFill(colour))
+      elif x2 <x1 and y2==y1:
+        polyline = Polyline(((x2,y2),(int(x1/2),int(y2-(x1/2))),(x1,y1)),SolidFill(colour))
+      else: 
+        polyline = Polyline(((x1,y1),(x1,y2),(x2,y2)),SolidFill(colour))
+    return (polyline)

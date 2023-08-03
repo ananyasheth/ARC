@@ -39,18 +39,35 @@ class GroupOfShapes(Shape):
       for shape_kind in kind:
         if shape.kind==shape_kind:
           return True
-    
-  def fetch_shape(self,kind=None,coordinates=None):
+          
+  def check_colour(self,shape,colour):
+      for shape_colour in colour:
+        if shape.fill.colour == shape_colour:
+          return True
+  
+  def fetch_shape(self,kind=None,coordinates=None, colour=None):
     fetched_shapes=[]
     for shape in self.shapes:
-      if coordinates is not None and kind is None:
+      if coordinates is not None and kind is None and colour is None:
         if self.check_coordinates(shape,coordinates):
           fetched_shapes.append(shape)
-      elif kind is not None and coordinates is None:
+      elif kind is not None and coordinates is None and colour is None:
         if self.check_kind(shape,kind):
           fetched_shapes.append(shape)
-      else:
+      elif colour is not None and coordinates is None and kind is None:
+        if self.check_colour(shape,colour):
+          fetched_shapes.append(shape)
+      elif colour is not None and coordinates is not None and kind is None:
+        if self.check_colour(shape,colour) and self.check_coordinates(shape,coordinates):
+          fetched_shapes.append(shape)
+      elif colour is not None and kind is not None and coordinates is None:
+        if self.check_colour(shape,colour) and self.check_kind(shape,kind):
+          fetched_shapes.append(shape)
+      elif coordinates is not None and kind is not None and colour is None:
         if self.check_coordinates(shape,coordinates) and self.check_kind(shape,kind):
+          fetched_shapes.append(shape)
+      else:
+        if self.check_coordinates(shape,coordinates) and self.check_kind(shape,kind) and self.check_colour(shape,colour):
           fetched_shapes.append(shape)
     return fetched_shapes
             

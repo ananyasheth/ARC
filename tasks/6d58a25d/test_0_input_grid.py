@@ -5,7 +5,7 @@ from GroupOfShapes import *
 
 def input_grid():
     triangle = Triangle(((6,3),(3,6),(6,9)),SolidFill(1))
-    tshape = Tshape(((6,4),(6,8),(5,6)),SolidFill(0))
+    tshape = Tshape(((6,4),(6,8),(5,6),(5,6)),SolidFill(0))
     triangle.delete(tshape)
     return(GroupOfShapes([
         Background((20,20)),

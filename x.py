@@ -12,4 +12,3 @@ taskid = '1f642eb9'
 
 task = Task(taskid)
 task.load()
-task.check_shapes()

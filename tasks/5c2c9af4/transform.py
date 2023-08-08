@@ -43,6 +43,7 @@ def transform(group_of_shapes):
         if y4 < bg_size:
             loop_count_4 +=1
 
+    loop_count_max = max(loop_count_1, loop_count_2, loop_count_3, loop_count_4)
     for loop in range(0,loop_count_max):
         new_group_of_shapes.append(RectangleOutline(((x-line_width,y-line_width),(x+line_width,y+line_width)),SolidFill(dots[1].fill.colour)))
         line_width += dots_width

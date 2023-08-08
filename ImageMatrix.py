@@ -117,3 +117,8 @@ class ImageMatrix:
     offset=(self.x_offset+x,self.y_offset+y)
     matrix = self.matrix
     self.updateMatrix(matrix,offset)
+
+  def updateColour(self,colour):
+    for x in range(self.min_x,self.max_x+1):
+      for y in range(self.min_y,self.max_y+1):
+        self.matrix[x-self.x_offset,y-self.y_offset] = colour

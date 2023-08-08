@@ -220,33 +220,57 @@ class RectangleOutline(Shape):
     
 class Tshape(Shape):
   def __init__(self,points,fill):
-    ((x1,y1),(x2,y2),(x3,y3)) = points    # x3,y3 T corner point
-    min_x = min(x1,x2,x3)
-    max_x = max(x1,x2,x3)
-    x_size = max_x-min_x+1
-    min_y = min(y1,y2,y3)
-    max_y = max(y1,y2,y3)
-    y_size = max_y-min_y+1
-    matrix = np.full((x_size,y_size),-1)
-    if x1 == x2:
-      if x3 > x1:       # normal T
-        matrix[:, int((max_y-min_y)/2)] = 10
-        matrix[0, :] = 10
-      else:             # inverted T
-        matrix[:, int((max_y-min_y)/2)] = 10
-        matrix[int((max_x-min_x)), :] = 10
-    else:
-      if y3 > y1:       # right T
-        matrix[:, 0] = 10
-        matrix[int((max_x-min_x)/2),:] = 10
-      else:             # left T
-        matrix[:, max_y-min_y] = 10
-        matrix[int((max_x-min_x)/2),:] = 10
+    # x1, y1, x2, y2 encode the line with a middle point touches the second line. For normal T, the horizontal line
+    # x3, y3, x4, y3 encode the line that touches the middle point. For normal T, the vertical line
+    # Enocde logic should always top to bottom, left to right
+    ((x1, y1), (x2, y2), (x3, y3), (x4, y4)) = points 
+    min_x = min(x1, x2, x3, x4)
+    max_x = max(x1, x2, x3, x4)
+    x_size = max_x - min_x + 1
+    min_y = min(y1, y2, y3, y4)
+    max_y = max(y1, y2, y3, y4)
+    y_size = max_y - min_y + 1
+    matrix = np.full((x_size, y_size), -1)
+
+    if y3 > y1 and y4 <y2:    # Nomral or inverted T
+      # Horizontal line of T
+      start_row = x1 - min_x
+      end_row = x2 - min_x
+      for row in range(start_row, end_row + 1):
+        matrix[row] = [10] * len(matrix[row])
+      
+      # Vertical line of T
+      start_column = y3 - min_y
+      end_column = y4 - min_y
+      for row in matrix:
+        row[start_column:end_column + 1] = [10] * (end_column - start_column + 1) 
+
+
+    else:                     # Right or Left T
+      # Horizontal line of T
+      start_row = x3 - min_x
+      end_row = x4 - min_x
+      for row in range(start_row, end_row + 1):
+        matrix[row] = [10] * len(matrix[row])
+      
+      # Vertical line of T
+      start_column = y1 - min_y
+      end_column = y2 - min_y
+      for row in matrix:
+        row[start_column:end_column + 1] = [10] * (end_column - start_column + 1)
     
     ImageMatrix.__init__(self, matrix, (min_x, min_y))
     fill.apply(self)
     self.kind = 'Tshape'
     self.fill = fill
+
+  def __gt__(self,other):
+    return(self.x_size*self.y_size>other.x_size*other.y_size)
+    
+  def scale(self,x,y):
+    new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
+
 
 class Polyline(Shape):
   def __init__(self, points,fill):
@@ -263,6 +287,7 @@ class Polyline(Shape):
       if point + 1 == len(points):
         break                       # connection stops between last point and first point
       else:
+
         x1, y1 = points[point]      # current point
         x2, y2 = points[point + 1]  # next point
         dx = x2 - x1
@@ -314,6 +339,20 @@ class Polyline(Shape):
     self.fill = fill
     self.points = points
 
+  def __gt__(self,other):
+    return(self.x_size*self.y_size>other.x_size*other.y_size)
+    
+  def scale(self,x,y):
+    new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
+
+  def count_dots(self):
+      dot_count = 0
+      for row in self.matrix:
+          for value in row:
+              if value >= 0:
+                  dot_count += 1
+      return dot_count
 
 class Polygon(Shape):
   def __init__(self, points,fill):
@@ -327,6 +366,7 @@ class Polygon(Shape):
 
     # Connect the points to form the shape
     for point in range(len(points)):
+
       x1, y1 = points[point]      # current point
       x2, y2 = points[(point + 1) % len(points)]  # next point
       dx = x2 - x1
@@ -377,3 +417,56 @@ class Polygon(Shape):
     self.kind = 'Polygon'
     self.fill = fill
     self.points = points
+
+  def __gt__(self,other):
+    return(self.x_size*self.y_size>other.x_size*other.y_size)
+    
+  def scale(self,x,y):
+    new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
+
+class Triangle(Shape):
+  def __init__(self,points,fill):
+    ((x1,y1),(x2,y2),(x3,y3)) = points    # x3, y3 should be the right angle
+    min_x = min(x1,x2,x3)
+    max_x = max(x1,x2,x3)
+    x_size = max_x-min_x+1
+    min_y = min(y1,y2,y3)
+    max_y = max(y1,y2,y3)
+    y_size = max_y-min_y+1
+    matrix = np.full((x_size,y_size),-1)
+
+    # A function to check whether point P(x, y) lies inside the triangle formed by A(x1, y1), B(x2, y2) and C(x3, y3)
+    # Reference from: https://www.geeksforgeeks.org/check-whether-a-given-point-lies-inside-a-triangle-or-not/amp/
+    def is_inside(x1, y1, x2, y2, x3, y3, x, y):
+
+      # A utility function to calculate area of triangle formed by (x1, y1), # (x2, y2) and (x3, y3)
+      def area(x1, y1, x2, y2, x3, y3):
+        return abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)) / 2.0)
+
+      A = area(x1, y1, x2, y2, x3, y3)  
+      A1 = area(x, y, x2, y2, x3, y3)
+      A2 = area(x1, y1, x, y, x3, y3)
+      A3 = area(x1, y1, x2, y2, x, y)
+
+      # Assign 10 to the matrix if the point is inside the triangle
+      if A == A1 + A2 + A3:
+        matrix[x - min_x, y - min_y] = 10
+
+    # Iterate over the coordinates in the matrix
+    for y in range(min_y, max_y + 1):
+      for x in range(min_x, max_x + 1):
+        is_inside(x1, y1, x2, y2, x3, y3, x, y)
+    
+    ImageMatrix.__init__(self, matrix, (min_x, min_y))
+    fill.apply(self)
+    self.kind = 'Triangle'
+    self.fill = fill
+    self.points = points
+
+  def __gt__(self,other):
+    return(self.x_size*self.y_size>other.x_size*other.y_size)
+    
+  def scale(self,x,y):
+    new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
+    self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))

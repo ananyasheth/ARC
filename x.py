@@ -7,7 +7,7 @@ from Fill import *
 from Shape import *
 from GroupOfShapes import *
 
-taskid = '5c2c9af4'
+taskid = '6d58a25d'
 
 
 task = Task(taskid)

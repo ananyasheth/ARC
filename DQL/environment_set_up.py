@@ -1,17 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Deep Learning Reinforcement Tutorial: Deep Q Network (DQN) = Combination of Deep Learning and Q-Learning Tutorial
-
-The class developed in this file implements the Deep Q Network (DQN) Reinforcement Learning Algorithm.
-The implementation is based on the OpenAI Gym Cart Pole environment and TensorFlow (Keras) machine learning library
-
-The webpage explaining the codes and the main idea of the DQN is given here:
-
-https://aleksandarhaber.com/deep-q-networks-dqn-in-python-from-scratch-by-using-openai-gym-and-tensorflow-reinforcement-learning-tutorial/
-
-
-Author: Aleksandar Haber 
-Date: February 2023
 
 Tested on:
 
@@ -46,7 +34,7 @@ class DeepQLearning:
     #   START - __init__ function
     ###########################################################################
     # INPUTS: 
-    # env - Cart Pole environment
+    # env - ARC Environment
     # gamma - discount rate
     # epsilon - parameter for epsilon-greedy approach
     # numberEpisodes - total number of simulation episodes
@@ -62,16 +50,16 @@ class DeepQLearning:
         
         # state dimension
         self.stateDimension=4
-        # action dimension
-        self.actionDimension=2
+        # action dimension (Transform operations - ImageMatrix, GroupOfShapes, Shape class)
+        self.actionDimension=20
         # this is the maximum size of the replay buffer
-        self.replayBufferSize=300
+        self.replayBufferSize=50
         # this is the size of the training batch that is randomly sampled from the replay buffer
-        self.batchReplayBufferSize=100
+        self.batchReplayBufferSize=5
         
         # number of training episodes it takes to update the target network parameters
         # that is, every updateTargetNetworkPeriod we update the target network parameters
-        self.updateTargetNetworkPeriod=100
+        self.updateTargetNetworkPeriod=10
         
         # this is the counter for updating the target network 
         # if this counter exceeds (updateTargetNetworkPeriod-1) we update the network 

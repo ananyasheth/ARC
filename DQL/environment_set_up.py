@@ -49,7 +49,7 @@ class DeepQLearning:
         self.numberEpisodes=numberEpisodes
         
         # state dimension
-        self.stateDimension=4
+        self.stateDimension=[10,10]
         # action dimension (Transform operations - ImageMatrix, GroupOfShapes, Shape class)
         self.actionDimension=20
         # this is the maximum size of the replay buffer
@@ -69,7 +69,7 @@ class DeepQLearning:
         # this sum is used to store the sum of rewards obtained during each training episode
         self.sumRewardsEpisode=[]
         
-        # replay buffer
+        # replay buffer - double ended queue for fast appends and pops 
         self.replayBuffer=deque(maxlen=self.replayBufferSize)
         
         # this is the main network

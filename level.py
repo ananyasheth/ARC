@@ -25,7 +25,8 @@ level={
     '8e1813be',
     'bd4472b8',
     'be94b721',
-    '3906de3d'
+    '3906de3d',
+    '4093f84a'
   ],
   
   'Easy':[
@@ -49,6 +50,8 @@ level={
     '50cb2852',
     'bdad9b1f',
     '868de0fa',
-    '7ddcd7ec'
+    '7ddcd7ec',
+    'beb8660c',
+    'b6afb2da'
   ]
 }

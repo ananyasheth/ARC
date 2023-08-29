@@ -160,6 +160,15 @@ class Line(Shape):
     new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
     self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
 
+  def calculate_length(self):
+      dot_count = 0
+      for row in self.matrix:
+          for value in row:
+              if value >= 0:
+                  dot_count += 1
+      return dot_count
+
+
 class Rectangle(Shape):
 
   def __init__(self,points,fill):
@@ -220,8 +229,8 @@ class RectangleOutline(Shape):
     
 class Tshape(Shape):
   def __init__(self,points,fill):
-    # x1, y1, x2, y2 encode the line with a middle point touches the second line. For normal T, the horizontal line
-    # x3, y3, x4, y3 encode the line that touches the middle point. For normal T, the vertical line
+    # x1, y1, x2, y2 coordinates of horizontal line of T
+    # x3, y3, x4, y4 coordinates of the vertical line of T
     # Enocde logic should always top to bottom, left to right
     ((x1, y1), (x2, y2), (x3, y3), (x4, y4)) = points 
     min_x = min(x1, x2, x3, x4)
@@ -244,7 +253,10 @@ class Tshape(Shape):
       end_column = y4 - min_y
       for row in matrix:
         row[start_column:end_column + 1] = [10] * (end_column - start_column + 1) 
-
+      if x3 == x1:
+        self.kind = 'NormalT'
+      else:
+        self.kind = 'InvertedT'
 
     else:                     # Right or Left T
       # Horizontal line of T
@@ -258,10 +270,14 @@ class Tshape(Shape):
       end_column = y2 - min_y
       for row in matrix:
         row[start_column:end_column + 1] = [10] * (end_column - start_column + 1)
+      if y3 == y1:
+        self.kind = 'RightT'
+      else:
+        self.kind = 'LeftT'
     
     ImageMatrix.__init__(self, matrix, (min_x, min_y))
     fill.apply(self)
-    self.kind = 'Tshape'
+    #self.kind = 'Tshape'
     self.fill = fill
 
   def __gt__(self,other):
@@ -271,6 +287,13 @@ class Tshape(Shape):
     new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
     self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
 
+  def calculate_length(self):
+      dot_count = 0
+      for row in self.matrix:
+          for value in row:
+              if value >= 0:
+                  dot_count += 1
+      return dot_count
 
 class Polyline(Shape):
   def __init__(self, points,fill):
@@ -346,13 +369,39 @@ class Polyline(Shape):
     new_matrix = np.full((self.x_size*x, self.y_size*y),self.fill.colour)
     self.updateMatrix(new_matrix,(self.x_offset,self.y_offset))
 
-  def count_dots(self):
+  def calculate_length(self):
       dot_count = 0
       for row in self.matrix:
           for value in row:
               if value >= 0:
                   dot_count += 1
       return dot_count
+  
+  def Lshape_direction(self):
+      point0 = self.points[0]
+      point1 = self.points[1]
+      point2 = self.points[2]
+
+      min_x0, min_y0 = point0[0], point0[1]
+      min_x1, min_y1 = point1[0], point1[1]
+      min_x2, min_y2 = point2[0], point2[1]
+
+      if (min_x1 > min_x0 and min_y1 < min_y2) or (min_x1 > min_x2 and min_y1 < min_y0):
+          direction = 'bottom-left-L'
+      elif (min_x1 > min_x0 and min_y1 > min_y2) or (min_x1 > min_x2 and min_y1 < min_y0):
+          direction = 'bottom-right-L'
+      elif (min_x1 < min_x2 and min_y1 < min_y0) or (min_x1 < min_x0 and min_y1 < min_y2):
+          direction = 'top-left-L'
+      elif (min_x1 < min_x2 and min_y1 > min_y0) or (min_x1 < min_x0 and min_y1 > min_y2):
+          direction = 'top-right-L'
+      else:
+          direction = 'encoding error'
+
+      return direction
+
+
+
+
 
 class Polygon(Shape):
   def __init__(self, points,fill):

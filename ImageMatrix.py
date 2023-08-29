@@ -122,3 +122,46 @@ class ImageMatrix:
     for x in range(self.min_x,self.max_x+1):
       for y in range(self.min_y,self.max_y+1):
         self.matrix[x-self.x_offset,y-self.y_offset] = colour
+
+  def move_to_edge (self, background_x, background_y, direction):
+    #example task:a8c38be5
+    direction_coords = {
+        'top': (0, int(round(background_y / 2))),
+        'bottom': (background_x - 1, int(round(background_y / 2))),
+        'left': (int(round(background_x / 2)), 0),
+        'right': (int(round(background_x / 2)), background_y - 1),
+        'top-left': (0, 0),
+        'top-right': (0, background_y - 1),
+        'bottom-left': (background_x - 1, 0),
+        'bottom-right': (background_x - 1, background_y - 1)
+        }
+    # Get the coordinates for the selected direction
+    target_x, target_y = direction_coords.get(direction, (0, 0))
+
+    if direction == 'top':
+      move_x = target_x - self.min_x
+      move_y = target_y - (self.min_y + (int(round((self.y_size)/2))-1))
+    elif direction == 'bottom':
+      move_x = target_x - self.max_x
+      move_y = target_y - (self.min_y + (int(round((self.y_size)/2))-1))
+    elif direction == 'right':
+      move_x = target_x - (self.min_x + (int(round((self.x_size)/2))-1))
+      move_y = target_y - self.max_y
+    elif direction == 'left':
+      move_x = target_x - (self.min_x + (int(round((self.x_size)/2))-1))
+      move_y = target_y - self.min_y
+
+    if direction == 'top-left':
+      move_x = target_x - self.min_x
+      move_y = target_y - self.min_y
+    elif direction == 'top-right':
+      move_x = target_x - self.min_x
+      move_y = target_y - self.max_y
+    elif direction == 'bottom-left':
+      move_x = target_x - self.max_x
+      move_y = target_y - self.min_y
+    elif direction == 'bottom-right':
+      move_x = target_x - self.max_x
+      move_y = target_y - self.max_y
+      
+    self.move_by(move_x, move_y)

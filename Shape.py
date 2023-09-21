@@ -76,6 +76,35 @@ class Shape(ImageMatrix):
     colours=[]
     new_min_x = new_max_x = new_min_y = new_max_y = None
 
+  def check_corner(self,grid_dimensions):
+  # example task: 49d1d64f
+    min_x = 0
+    min_y = 0
+    max_x = grid_dimensions[0]-1
+    max_y = grid_dimensions[1]-1
+
+    position = None
+    # Top-left
+    if self.min_x == min_x and self.min_y == min_y:
+      position = 'top-left'
+    elif self.min_x == min_x and self.min_y == max_y:
+      position = 'top-right'
+    elif self.min_x == max_x and self.min_y == min_y:
+      position = 'bottom-left'
+    elif self.min_x == max_x and self.min_y == max_y:
+      position = 'bottom-right'
+    elif self.min_x == min_x and self.min_y < max_y and self.min_y > min_y:
+      position = 'top'
+    elif self.min_x == max_x and self.min_y < max_y and self.min_y > min_y:
+      position = 'bottom'
+    elif self.min_x > min_x and self.min_x < max_x and self.min_y == max_y:
+      position = 'right'
+    elif self.min_x > min_x and self.min_x < max_x and self.min_y == min_y:
+      position = 'left'
+
+    return (position)
+
+
 class Background(Shape):
 
   def __init__(self,size,fill=SolidFill(0)):

@@ -165,3 +165,14 @@ class ImageMatrix:
       move_y = target_y - self.max_y
       
     self.move_by(move_x, move_y)
+
+
+  def duplicate(self, x, y):
+      # Example task: b190f7f5
+      # Create a copy of the current matrix
+      duplicated_matrix = np.copy(self.matrix)
+      
+      # Create a new ImageMatrix instance with the duplicated matrix and new coordinates
+      duplicated_image = ImageMatrix(duplicated_matrix, (self.x_offset + x, self.y_offset + y))
+      
+      return(duplicated_image)

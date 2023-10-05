@@ -1,0 +1,12 @@
+from ImageMatrix import *
+from Shape import *
+from Fill import *
+from GroupOfShapes import *
+
+def input_grid():
+	return(GroupOfShapes([
+			Background((3,3)),
+            Dot((1,0),SolidFill(7)),
+			]))
+
+

@@ -16,7 +16,8 @@ level={
     'a8c38be5',
     '6ecd11f4',
     '8f2ea7aa',
-    '49d1d64f'
+    '49d1d64f'.
+    'b190f7f5'
   ],
   
   'Medium':[
@@ -36,7 +37,8 @@ level={
     'ae4f1146',
     '995c5fa3',
     '1190e5a7',
-    '67a3c6ac'
+    '67a3c6ac',
+    'c9e6f938'
   ],
   
   'Easy':[
@@ -62,6 +64,8 @@ level={
     '868de0fa',
     '7ddcd7ec',
     'beb8660c',
-    'b6afb2da'
+    'b6afb2da',
+    'a9f96cdd',
+    '150deff5'
   ]
 }

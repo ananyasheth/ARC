@@ -200,3 +200,16 @@ class GroupOfShapes(Shape):
       else: 
         polyline = Polyline(((x1,y1),(x1,y2),(x2,y2)),SolidFill(colour))
     return (polyline)
+
+  def return_shape_list_coordinates(self, shape_list):
+    min_x, min_y, max_x, max_y = None, None, None, None
+    for shape in shape_list:
+      if min_x is None or shape.min_x < min_x:
+        min_x = shape.min_x
+      if min_y is None or shape.min_y < min_y:
+        min_y = shape.min_y
+      if max_x is None or shape.max_x > max_x:
+        max_x = shape.max_x
+      if max_y is None or shape.max_y > max_y:
+        max_y = shape.max_y
+    return (min_x, min_y, max_x, max_y)
